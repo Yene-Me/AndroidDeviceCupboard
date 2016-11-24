@@ -3,6 +3,11 @@ package com.camden.device.androiddevicecupboard;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.AudioManager;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.media.ToneGenerator;
+import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.Build;
@@ -21,10 +26,13 @@ public class MainActivity extends AppCompatActivity {
     private WebView webView;
     private NfcAdapter mNfcAdapter;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
 
         webView = (WebView) findViewById(R.id.scan_nfc_web_view);
@@ -63,8 +71,9 @@ public class MainActivity extends AppCompatActivity {
 
                 nfcID += Integer.toHexString(tag.getId()[index]) + ":";
             }
-            Toast.makeText(this, "NFC: "+nfcID, Toast.LENGTH_LONG).show();
+
             webView.loadUrl("javascript:updateNfcInput('"+nfcID+"')");
+            soundFeedBack();
         }
     }
 
@@ -108,6 +117,17 @@ public class MainActivity extends AppCompatActivity {
         }*/
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void soundFeedBack ()
+    {
+        try {
+            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+            r.play();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
 
